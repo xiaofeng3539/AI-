@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <limits.h>
+#include <stddef.h>
+#include <queue>
+
+// 二叉树节点定义
+typedef struct TreeNode {
+    int data;
+    struct TreeNode *left;
+    struct TreeNode *right;
+} TreeNode;
+
+// 创建一个新节点
+TreeNode* createTreeNode(int data) {
+    TreeNode* newNode = (TreeNode*)malloc(sizeof(TreeNode));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// 插入节点（这里简单示例为在树为空时插入根节点，其他情况可根据需求扩展）
+TreeNode* insertNode(TreeNode* root, int data) {
+    if (root == NULL) {
+        return createTreeNode(data);
+    }
+    if (data < root->data) {
+        root->left = insertNode(root->left, data);
+    } else {
+        root->right = insertNode(root->right, data);
+    }
+    return root;
+}
+
+// 查找节点
+TreeNode* searchNode(TreeNode* root, int data) {
+    if (root == NULL || root->data == data) {
+        return root;
+    }
+    if (data < root->data) {
+        return searchNode(root->left, data);
+    }
+    return searchNode(root->right, data);
+}
+
+// 前序遍历
+void preorderTraversal(TreeNode* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+
+// 中序遍历
+void inorderTraversal(TreeNode* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+// 后序遍历
+void postorderTraversal(TreeNode* root) {
+    if (root != NULL) {
+        postorderTraversal(root->left);
+        postorderTraversal(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// 层序遍历
+void levelorderTraversal(TreeNode* root) {
+    if (root == NULL) return;
+
+    struct TreeNode* queue[100];
+    int front = 0, rear = 0;
+
+    queue[rear++] = root;
+
+    while (front < rear) {
+        TreeNode* node = queue[front++];
+        printf("%d ", node->data);
+
+        if (node->left != NULL) {
+            queue[rear++] = node->left;
+        }
+        if (node->right != NULL) {
+            queue[rear++] = node->right;
+        }
+    }
+}
+
+// 获取树的高度
+int getHeight(TreeNode* root) {
+    if (root == NULL) {
+        return 0;
+    }
+    int leftHeight = getHeight(root->left);
+    int rightHeight = getHeight(root->right);
+
+    if (leftHeight > rightHeight) {
+        return leftHeight + 1;
+    } else {
+        return rightHeight + 1;
+    }
+}
+
+// 判断树是否为空
+bool isEmpty(TreeNode* root) {
+    return root == NULL;
+}
+
+int main() {
+    TreeNode* root = NULL;
+    root = insertNode(root, 5);
+    insertNode(root, 3);
+    insertNode(root, 7);
+    insertNode(root, 2);
+    insertNode(root, 4);
+    insertNode(root, 6);
+    insertNode(root, 8);
+
+    printf("前序遍历: ");
+    preorderTraversal(root);
+    printf("\n");
+
+    printf("中序遍历: ");
+    inorderTraversal(root);
+    printf("\n");
+
+    printf("后序遍历: ");
+    postorderTraversal(root);
+    printf("\n");
+
+    printf("层序遍历: ");
+    levelorderTraversal(root);
+    printf("\n");
+
+    printf("树的高度: %d\n", getHeight(root));
+
+    TreeNode* found = searchNode(root, 4);
+    if (found != NULL) {
+        printf("找到节点: %d\n", found->data);
+    } else {
+        printf("未找到节点\n");
+    }
+
+    printf("树是否为空: %s\n", isEmpty(root)? "是" : "否");
+
+    return 0;
+}
