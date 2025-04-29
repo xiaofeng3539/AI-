@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+
+// 朴素匹配法实现字符串匹配
+int naiveStringMatch(const char *text, const char *pattern) {
+    int n = strlen(text);
+    int m = strlen(pattern);
+
+    for (int i = 0; i <= n - m; i++) {
+        int j;
+        for (j = 0; j < m; j++) {
+            if (text[i + j] != pattern[j]) {
+                break;
+            }
+        }
+        if (j == m) {
+            return i;  // 返回模式串在主串中首次出现的位置
+        }
+    }
+    return -1;  // 表示未找到匹配的子串
+}
+
+int main() {
+    char text[] = "ABABDABACDABABCABAB";
+    char pattern[] = "ABABCABAB";
+
+    int result = naiveStringMatch(text, pattern);
+    if (result != -1) {
+        printf("模式串在主串中首次出现的位置是: %d\n", result);
+    } else {
+        printf("未找到匹配的子串\n");
+    }
+
+    return 0;
+}
