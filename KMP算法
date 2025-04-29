@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+
+// 计算部分匹配表（也叫前缀函数）
+void computeLPSArray(const char *pattern, int M, int *lps) {
+    int len = 0;
+    int i = 1;
+    lps[0] = 0;
+
+    while (i < M) {
+        if (pattern[i] == pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len != 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = len;
+                i++;
+            }
+        }
+    }
+}
+
+// KMP 字符串匹配算法
+int KMPSearch(const char *text, const char *pattern) {
+    int N = strlen(text);
+    int M = strlen(pattern);
+
+    int lps[M];
+    computeLPSArray(pattern, M, lps);
+
+    int i = 0;  // 文本串的索引
+    int j = 0;  // 模式串的索引
+    while (i < N) {
+        if (pattern[j] == text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j == M) {
+            return i - j;  // 找到匹配，返回模式串在文本串中首次出现的位置
+        } else if (i < N && pattern[j] != text[i]) {
+            if (j != 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    return -1;  // 未找到匹配
+}
+
+int main() {
+    char text[] = "ABABDABACDABABCABAB";
+    char pattern[] = "ABABCABAB";
+
+    int result = KMPSearch(text, pattern);
+    if (result != -1) {
+        printf("模式串在主串中首次出现的位置是: %d\n", result);
+    } else {
+        printf("未找到匹配的子串\n");
+    }
+
+    return 0;
+}
